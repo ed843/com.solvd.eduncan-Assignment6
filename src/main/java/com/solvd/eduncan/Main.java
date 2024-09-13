@@ -12,25 +12,30 @@ import java.util.logging.Logger;
 
 public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
+    private static final String WORKING_DIRECTORY = System.getProperty("user.dir") + "\\src\\main\\resources\\";
+    private static final String ANSWER_FILE = WORKING_DIRECTORY + "\\answers\\answer.txt";
 
     public static void main(String[] args) {
         // initialize the file
-        String workingDirectory = System.getProperty("user.dir") + "\\src\\main\\resources\\";
-        List<String> fileNames = getTextFiles(workingDirectory);
+        List<String> fileNames = getTextFiles(WORKING_DIRECTORY);
 
         for (String fileName : fileNames) {
-            File file = new File(workingDirectory + fileName);
-
             try {
+                File file = new File(WORKING_DIRECTORY + fileName);
+
                 // Take contents of file and turn it into a string array
                 String text = FileUtils.readFileToString(file, "UTF-8");
                 String[] strList = text.split("\\s");
+
                 int numberOfWords = getNumberOfWords(strList);
                 int numOfUniqueWords = numberOfUniqueWords(strList);
 
-                System.out.println("File: " + fileName);
-                System.out.println("Out of " + numberOfWords + " words, " +
-                        "There are " + numOfUniqueWords + " unique words in this file");
+                String output = "File: " + fileName + "\n" +
+                        "Out of " + numberOfWords + " words," + " there are " + numOfUniqueWords +
+                        " unique words in this file.\n";
+
+                // Write the answers to the answer.txt file
+                FileUtils.writeStringToFile(new File(ANSWER_FILE), output, true);
             } catch (IOException e) {
                 logger.severe("An error occurred while reading the file: " + fileName);
                 logger.severe(e.toString());
